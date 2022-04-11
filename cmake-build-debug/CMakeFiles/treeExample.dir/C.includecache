@@ -1,0 +1,24 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+D:/My shit)/treeExample/petclub.c
+stdio.h
+-
+string.h
+-
+ctype.h
+-
+windows.h
+-
+tree.h
+D:/My shit)/treeExample/tree.h
+
+D:/My shit)/treeExample/tree.h
+stdbool.h
+-
+

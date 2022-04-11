@@ -1,0 +1,3 @@
+D:/My shit)/treeExample/cmake-build-debug/CMakeFiles/treeExample.dir
+D:/My shit)/treeExample/cmake-build-debug/CMakeFiles/edit_cache.dir
+D:/My shit)/treeExample/cmake-build-debug/CMakeFiles/rebuild_cache.dir
