@@ -1,21 +1,4 @@
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include "tree.h"
-
-typedef struct pair{
-    Trnode * parent;
-    Trnode * child;
-}Pair;
-
-static Trnode * MakeNode(const Item * pi);
-static bool ToLeft(const Item * i1, const Item * i2);
-static bool ToRight(const Item * i1, const Item * i2);
-static void AddNode(Trnode * new_code, Trnode * root);
-static void InOrder(const Trnode * root, void (*pfun) (Item item));
-static Pair SeekItem(const Item * pi, const Tree * ptree);
-static void DeleteNode(Trnode ** ptr);
-static void DeleteAllNodes(Trnode * ptr);
 
 void InitializeTree(Tree * ptree){
     ptree->root = NULL;
@@ -139,9 +122,9 @@ static void AddNode(Trnode * new_node, Trnode * root){
 
 static bool ToLeft(const Item * i1, const Item * i2){
     int comp1;
-    if((comp1 = strcmp(i1->petname , i2->petname)) < 0)
+    if((comp1 = strcmp(i1->studentName , i2->studentName)) < 0)
         return true;
-    else if(comp1 == 0 && strcmp(i1->petkind, i2->petkind) < 0)
+    else if(comp1 == 0 && strcmp(i1->studentSpecialty, i2->studentSpecialty) < 0)
         return true;
     else
         return false;
@@ -149,9 +132,9 @@ static bool ToLeft(const Item * i1, const Item * i2){
 
 static bool ToRight(const Item * i1, const Item * i2){
     int comp1;
-    if((comp1 = strcmp(i1->petname, i2->petname)) > 0)
+    if((comp1 = strcmp(i1->studentName, i2->studentName)) > 0)
         return true;
-    else if(comp1 == 0 && strcmp(i1->petkind, i2->petkind) > 0)
+    else if(comp1 == 0 && strcmp(i1->studentSpecialty, i2->studentSpecialty) > 0)
         return true;
     else
         return false;
@@ -215,5 +198,165 @@ static void DeleteNode(Trnode **ptr){
         temp = *ptr;
         *ptr = (*ptr)->left;
         free(temp);
+    }
+}
+
+char menu(void){
+    int ch;
+    puts("================================================================================================");
+    puts("Dean's office\n");
+    puts("a) Add student           b) Show list of students");
+    puts("d) Amount of students    c) Find students");
+    puts("e) Delete student        q) Exit");
+    puts("f) Write info about students to binary file");
+    puts("g) Reading info about students from binary file");
+    puts("================================================================================================");
+    while((ch = getchar()) != EOF){
+        while(getchar() != '\n')
+            continue;
+        ch = tolower(ch);
+        if(strchr("abcdefgq", ch) == NULL)
+            puts("Enter a, b, c, d, e, f, g or q");
+        else
+            break;
+    }
+
+    if(ch == EOF)
+        ch = 'q';
+
+    return ch;
+}
+
+void addStudent(Tree * pt){
+    Item temp;
+
+    if(TreeIsFull(pt))
+        puts("No place to add students");
+    else{
+        puts("Enter the name, surname and patronymic of the student:");
+        s_gets(temp.studentName, 20);
+        s_gets(temp.studentSurname, 20);
+        s_gets(temp.studentPatronymic, 20);
+        puts("Enter the specialty of student");
+        s_gets(temp.studentSpecialty, 20);
+        uppercase(temp.studentName);
+        uppercase(temp.studentSurname);
+        uppercase(temp.studentPatronymic);
+        uppercase(temp.studentSpecialty);
+        AddItem(&temp, pt);
+    }
+}
+
+void showStudents(const Tree * pt){
+    if(TreeIsEmpty(pt))
+        puts("No entries");
+    else
+        Traverse(pt, printItem);
+}
+
+void printItem(Item item){
+    printf("Student: %-19s %-19s %-19s\nSpecialty of student: %-19s\n", item.studentName, item.studentSurname, item.studentPatronymic, item.studentSpecialty);
+}
+
+void findStudent(const Tree * pt){
+    Item temp;
+
+    if(TreeIsEmpty(pt)){
+        puts("No entries");
+        return;
+    }
+
+    puts("Enter the name, surname and patronymic of the student you want to find:\n");
+    s_gets(temp.studentName,       20);
+    s_gets(temp.studentSurname,    20);
+    s_gets(temp.studentPatronymic, 20);
+    puts("Enter the student's specialty:\n");
+    s_gets(temp.studentSpecialty,  20);
+    uppercase(temp.studentName);
+    uppercase(temp.studentSurname);
+    uppercase(temp.studentPatronymic);
+    uppercase(temp.studentSpecialty);
+    printf("%s by the name %s", temp.studentSpecialty, temp.studentName);
+    if(InTree(&temp, pt))
+        printf("is a club member.\n");
+    else
+        printf("isn't a club member\n");
+}
+
+void dropStudent(Tree * pt){
+    Item temp;
+
+    if(TreeIsEmpty(pt)){
+        puts("No entries");
+        return;
+    }
+    puts("Enter the name, surname, patronymic of the student to be excluded from the dean's office:");
+    s_gets(temp.studentName,       20);
+    s_gets(temp.studentSurname,    20);
+    s_gets(temp.studentPatronymic, 20);
+    puts("Enter the type of student:");
+    s_gets(temp.studentSpecialty,  20);
+    uppercase(temp.studentName);
+    uppercase(temp.studentSpecialty);
+    printf("%s by the name %s", temp.studentSpecialty, temp.studentName);
+    if(DeleteItem(&temp, pt))
+        printf("Expelled from the dean's office. \n");
+    else
+        printf("Not listed in the dean's office.\n");
+}
+
+void uppercase(char* str){
+    while(*str){
+        *str = toupper(*str);
+        str++;
+    }
+}
+
+char* s_gets(char* st, int n){
+    char* ret_val;
+    char* find;
+
+    ret_val = fgets(st, n, stdin);
+    if(ret_val){
+        find = strchr(st, '\n');
+        if(find)
+            *find = '\0';
+        else
+            while(getchar() != '\n')
+                continue;
+    }
+    return ret_val;
+}
+
+void writingInfoToFile(const Tree* students) {     // записываем в бинарный файл
+    FILE* output;
+
+    if (!fopen_s(&output, "binaryFile", "w+")) {
+        fwrite(students, sizeof(*students), 1, output);
+        fclose(output);
+    }
+    else {
+        printf("File corrupted");
+        exit(EXIT_FAILURE);
+    }
+}
+
+void readingInfoToFile(Tree** originalTree) {            // записываем из бинарного файла в структуру
+    FILE* output;
+
+    int count;
+    if (!fopen_s(&output, "binaryFile", "rb+"))
+    {
+        fseek(output, 0, SEEK_END);
+        count = (ftell(output)) / sizeof(**originalTree);
+        fseek(output, 0, SEEK_SET);
+        *originalTree = (Tree*)calloc(count, sizeof(Tree));
+        int i = 0;
+        fread(*originalTree, sizeof(**originalTree), count, output);
+        fclose(output);
+    }
+    else {
+        printf("File corrupted");
+        exit(EXIT_FAILURE);
     }
 }

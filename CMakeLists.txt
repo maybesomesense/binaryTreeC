@@ -3,4 +3,4 @@ project(treeExample C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(treeExample petclub.c tree.h tree.c)
+add_executable(treeExample decanat.c tree.h tree.c)

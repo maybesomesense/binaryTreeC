@@ -1,9 +1,9 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/treeExample.dir/petclub.c.obj"
+  "CMakeFiles/treeExample.dir/decanat.c.obj"
   "CMakeFiles/treeExample.dir/tree.c.obj"
+  "libtreeExample.dll.a"
   "treeExample.exe"
   "treeExample.exe.manifest"
-  "treeExample.lib"
   "treeExample.pdb"
 )
 

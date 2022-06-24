@@ -6,19 +6,19 @@
 
 #IncludeRegexTransform: 
 
-D:/My shit)/treeExample/petclub.c
-stdio.h
--
-string.h
--
-ctype.h
--
-windows.h
--
+D:/My shit)/treeExample/tree.c
 tree.h
 D:/My shit)/treeExample/tree.h
 
 D:/My shit)/treeExample/tree.h
 stdbool.h
+-
+string.h
+-
+stdio.h
+-
+stdlib.h
+-
+ctype.h
 -
 
